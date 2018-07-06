@@ -9,7 +9,7 @@ validarNombre unNombre | length unNombre > 20 = Error "Nombre muy largo"
                        | otherwise = Exito unNombre
 
 construirPersonajeValidado :: Validado String -> Validado Personaje
-construirPersonajeValidado nombreValidado = soloSiEstaValidado Personaje nombreValidado
+construirPersonajeValidado nombreValidado = fmap Personaje nombreValidado
 
 inicialesDePersonaje :: Personaje -> [String]
 inicialesDePersonaje unPersonaje = map (take 1) (words (nombre unPersonaje))
@@ -18,9 +18,9 @@ lichKing :: Validado Personaje
 lichKing = construirPersonajeValidado (validarNombre "Arthas Menethil")
 
 inicialesDePersonajeValidado :: Validado Personaje -> Validado [String]
-inicialesDePersonajeValidado unPersonaje = soloSiEstaValidado inicialesDePersonaje unPersonaje
+inicialesDePersonajeValidado unPersonaje = fmap inicialesDePersonaje unPersonaje
 
-soloSiEstaValidado :: (a->b) -> Validado a -> Validado b
-soloSiEstaValidado funcion unValor = case unValor of
-    Exito valorValidado -> Exito (funcion valorValidado)
-    Error mensajeDeError -> Error mensajeDeError
+instance Functor Validado where
+    fmap funcion valor = case valor of
+        Exito valorValidado -> Exito (funcion valorValidado)
+        Error mensajeDeError -> Error mensajeDeError
