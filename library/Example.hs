@@ -18,3 +18,8 @@ inicialesDePersonaje unPersonaje = map (take 1) (words (nombre unPersonaje))
 
 lichKing :: Validado Personaje
 lichKing = construirPersonajeValidado (validarNombre "Arthas Menethil")
+
+inicialesDePersonajeValidado :: Validado Personaje -> Validado [String]
+inicialesDePersonajeValidado unPersonaje = case unPersonaje of
+    Exito personajeValidado -> Exito (inicialesDePersonaje personajeValidado)
+    Error mensajeDeError -> Error mensajeDeError
