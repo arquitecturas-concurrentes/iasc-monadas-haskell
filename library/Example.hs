@@ -36,6 +36,11 @@ construirPersonajeValidado nombreValidado inventarioValidado rolValidado validac
         Exito unPersonaje -> validacionSobrePersonaje unPersonaje
         Error mensajeDeError -> Error mensajeDeError
 
+aplicarFuncionValidadoraSoloSiValidado :: (a -> Validado b) -> Validado a -> Validado b 
+aplicarFuncionValidadoraSoloSiValidado funcionValidadora valorValidado = case valorValidado of
+    Exito unValor -> funcionValidadora unValor
+    Error mensajeDeError -> Error mensajeDeError
+
 inicialesDePersonaje :: Personaje -> [String]
 inicialesDePersonaje unPersonaje = map (take 1) (words (nombre unPersonaje))
 
