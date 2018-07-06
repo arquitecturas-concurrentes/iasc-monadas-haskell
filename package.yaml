@@ -26,6 +26,7 @@ library:
   - aeson
   - megaparsec
   - text
+  - QuickCheck
   source-dirs: library
 
 executables:
