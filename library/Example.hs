@@ -57,3 +57,6 @@ instance Monad Validado where
 construirPersonajeValidado :: Validado String -> Validado [Item] -> Validado Rol -> (Personaje -> Validado Personaje) -> Validado Personaje
 construirPersonajeValidado nombreValidado inventarioValidado rolValidado validacionSobrePersonaje = 
         (Personaje <$> nombreValidado <*> inventarioValidado <*> rolValidado) >>= validacionSobrePersonaje
+
+posiblesPersonajes nombres inventarios roles transformaciones =
+    (Personaje <$> nombres <*> inventarios <*> roles) >>= transformaciones
