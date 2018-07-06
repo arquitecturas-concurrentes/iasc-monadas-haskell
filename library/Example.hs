@@ -23,3 +23,8 @@ inicialesDePersonajeValidado :: Validado Personaje -> Validado [String]
 inicialesDePersonajeValidado unPersonaje = case unPersonaje of
     Exito personajeValidado -> Exito (inicialesDePersonaje personajeValidado)
     Error mensajeDeError -> Error mensajeDeError
+
+soloSiEstaValidado :: (a->b) -> Validado a -> Validado b
+soloSiEstaValidado funcion unValor = case unValor of
+    Exito valorValidado -> Exito (funcion valorValidado)
+    Error mensajeDeError -> Error mensajeDeError
