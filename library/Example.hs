@@ -15,3 +15,6 @@ construirPersonajeValidado nombreValidado = case nombreValidado of
 
 inicialesDePersonaje :: Personaje -> [String]
 inicialesDePersonaje unPersonaje = map (take 1) (words (nombre unPersonaje))
+
+lichKing :: Validado Personaje
+lichKing = construirPersonajeValidado (validarNombre "Arthas Menethil")
