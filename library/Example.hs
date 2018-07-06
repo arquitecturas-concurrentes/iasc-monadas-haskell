@@ -9,7 +9,7 @@ validarNombre unNombre | length unNombre > 20 = Error "Nombre muy largo"
                        | otherwise = Exito unNombre
 
 construirPersonajeValidado :: Validado String -> Validado Personaje
-construirPersonajeValidado nombreValidado = fmap Personaje nombreValidado
+construirPersonajeValidado nombreValidado = Personaje <$> nombreValidado
 
 inicialesDePersonaje :: Personaje -> [String]
 inicialesDePersonaje unPersonaje = map (take 1) (words (nombre unPersonaje))
@@ -18,7 +18,7 @@ lichKing :: Validado Personaje
 lichKing = construirPersonajeValidado (validarNombre "Arthas Menethil")
 
 inicialesDePersonajeValidado :: Validado Personaje -> Validado [String]
-inicialesDePersonajeValidado unPersonaje = fmap inicialesDePersonaje unPersonaje
+inicialesDePersonajeValidado unPersonaje = inicialesDePersonaje <$> unPersonaje
 
 instance Functor Validado where
     fmap funcion valor = case valor of
