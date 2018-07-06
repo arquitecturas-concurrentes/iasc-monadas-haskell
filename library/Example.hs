@@ -59,3 +59,7 @@ instance Applicative Validado where
     Error mensajeDeError <*> _ = Error mensajeDeError
     _ <*> Error mensajeDeError = Error mensajeDeError
     pure valor = Exito valor
+
+instance Monad Validado where
+    Exito valor >>= funcion = funcion valor
+    Error mensajeDeError >>= _ = Error mensajeDeError
