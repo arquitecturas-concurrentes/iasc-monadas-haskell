@@ -1,16 +1,18 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Example where
 import qualified Data.Aeson as JSON
 import qualified Data.Aeson.Types as JSON
-import Data.Text (Text)
+import Data.Text (Text, unpack)
+import Text.Read
 
 getField :: (JSON.FromJSON a) => JSON.Object -> Text -> JSON.Parser a
 getField = (JSON..:)
 
 data Personaje = Personaje { nombre :: String, inventario :: [Item], rol :: Rol } deriving Show
 
-data Rol = Warrior | Mage | Priest | DeathKnight deriving (Show, Eq)
+data Rol = Warrior | Mage | Priest | DeathKnight deriving (Show, Eq, Read)
 
-data Item = Espada | Escudo | GrogXD deriving (Show, Eq)
+data Item = Espada | Escudo | GrogXD deriving (Show, Eq, Read)
 
 data Validado a = Exito a | Error String deriving Show
 
@@ -30,7 +32,7 @@ validarPersonaje unPersonaje | fuerza unPersonaje <= 100 = Exito unPersonaje
 
 fuerza :: Personaje -> Int
 fuerza unPersonaje = length (inventario unPersonaje) * indicePorRol (rol unPersonaje)
-    where indicePorRol unRol = case unRol of 
+    where indicePorRol unRol = case unRol of
             Warrior -> 30
             Mage -> 30
             Priest -> 10
@@ -61,7 +63,7 @@ instance Monad Validado where
     Error mensajeDeError >>= _ = Error mensajeDeError
 
 construirPersonajeValidado :: Validado String -> Validado [Item] -> Validado Rol -> (Personaje -> Validado Personaje) -> Validado Personaje
-construirPersonajeValidado nombreValidado inventarioValidado rolValidado validacionSobrePersonaje = 
+construirPersonajeValidado nombreValidado inventarioValidado rolValidado validacionSobrePersonaje =
         (Personaje <$> nombreValidado <*> inventarioValidado <*> rolValidado) >>= validacionSobrePersonaje
 
 posiblesPersonajes nombres inventarios roles transformaciones =
@@ -73,4 +75,19 @@ construirPersonaje nombre inventario rol transformacion = do
     unRol <- rol
     transformacion (Personaje unNombre unInventario unRol)
 
+instance JSON.FromJSON Personaje where
+    parseJSON = JSON.withObject "Personaje" $ \jsonObject ->
+        construirPersonaje
+            (getField jsonObject "nombre")
+            (getField jsonObject "inventario")
+            (getField jsonObject "rol")
+            pure
 
+instance JSON.FromJSON Item where
+    parseJSON = parseReadableFromText
+
+instance JSON.FromJSON Rol where
+    parseJSON = parseReadableFromText
+
+parseReadableFromText :: (Read a) => JSON.Value -> JSON.Parser a
+parseReadableFromText = JSON.withText "Rol" $ maybe (fail "Nope") pure . readMaybe . unpack
