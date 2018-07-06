@@ -30,10 +30,6 @@ fuerza unPersonaje = length (inventario unPersonaje) * indicePorRol (rol unPerso
             Priest -> 10
             DeathKnight -> 50
 
-construirPersonajeValidado :: Validado String -> Validado [Item] -> Validado Rol -> (Personaje -> Validado Personaje) -> Validado Personaje
-construirPersonajeValidado nombreValidado inventarioValidado rolValidado validacionSobrePersonaje = 
-        (Personaje <$> nombreValidado <*> inventarioValidado <*> rolValidado) >>= validacionSobrePersonaje
-
 inicialesDePersonaje :: Personaje -> [String]
 inicialesDePersonaje unPersonaje = map (take 1) (words (nombre unPersonaje))
 
@@ -57,3 +53,7 @@ instance Applicative Validado where
 instance Monad Validado where
     Exito valor >>= funcion = funcion valor
     Error mensajeDeError >>= _ = Error mensajeDeError
+
+construirPersonajeValidado :: Validado String -> Validado [Item] -> Validado Rol -> (Personaje -> Validado Personaje) -> Validado Personaje
+construirPersonajeValidado nombreValidado inventarioValidado rolValidado validacionSobrePersonaje = 
+        (Personaje <$> nombreValidado <*> inventarioValidado <*> rolValidado) >>= validacionSobrePersonaje
