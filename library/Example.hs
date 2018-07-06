@@ -39,3 +39,8 @@ instance Functor Validado where
     fmap funcion valor = case valor of
         Exito valorValidado -> Exito (funcion valorValidado)
         Error mensajeDeError -> Error mensajeDeError
+
+instance Applicative Validado where
+    Exito funcion <*> Exito valor = Exito (funcion valor)
+    Error mensajeDeError <*> _ = Error mensajeDeError
+    _ <*> Error mensajeDeError = Error mensajeDeError
