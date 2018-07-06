@@ -1,6 +1,8 @@
 module Example where
 
-data Personaje = Personaje { nombre :: String } deriving Show
+data Personaje = Personaje { nombre :: String, inventario :: [Item] } deriving Show
+
+data Item = Espada | Escudo | GrogXD deriving (Show, Eq)
 
 data Validado a = Exito a | Error String deriving Show
 
