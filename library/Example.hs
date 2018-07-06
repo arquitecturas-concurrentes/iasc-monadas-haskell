@@ -60,3 +60,9 @@ construirPersonajeValidado nombreValidado inventarioValidado rolValidado validac
 
 posiblesPersonajes nombres inventarios roles transformaciones =
     (Personaje <$> nombres <*> inventarios <*> roles) >>= transformaciones
+
+construirPersonaje nombre inventario rol transformacion = do
+    unNombre <- nombre
+    unInventario <- inventario
+    unRol <- rol
+    transformacion (Personaje unNombre unInventario unRol)
