@@ -12,3 +12,6 @@ construirPersonajeValidado :: Validado String -> Validado Personaje
 construirPersonajeValidado nombreValidado = case nombreValidado of
     Exito unNombre -> Exito (Personaje unNombre)
     Error mensajeDeError -> Error mensajeDeError
+
+inicialesDePersonaje :: Personaje -> [String]
+inicialesDePersonaje unPersonaje = map (take 1) (words (nombre unPersonaje))
