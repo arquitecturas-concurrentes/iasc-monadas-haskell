@@ -1,6 +1,8 @@
 module Example where
 
-data Personaje = Personaje { nombre :: String, inventario :: [Item] } deriving Show
+data Personaje = Personaje { nombre :: String, inventario :: [Item], rol :: Rol } deriving Show
+
+data Rol = Warrior | Mage | Priest | DeathKnight deriving (Show, Eq)
 
 data Item = Espada | Escudo | GrogXD deriving (Show, Eq)
 
