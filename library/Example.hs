@@ -9,4 +9,6 @@ validarNombre unNombre | length unNombre > 20 = Error "Nombre muy largo"
                        | otherwise = Exito unNombre
 
 construirPersonajeValidado :: Validado String -> Validado Personaje
-construirPersonajeValidado nombreValidado = undefined
+construirPersonajeValidado nombreValidado = case nombreValidado of
+    Exito unNombre -> Exito (Personaje unNombre)
+    Error mensajeDeError -> Error mensajeDeError
