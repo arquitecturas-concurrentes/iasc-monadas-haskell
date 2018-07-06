@@ -4,15 +4,16 @@ import qualified Data.Aeson as JSON
 import qualified Data.Aeson.Types as JSON
 import Data.Text (Text, unpack)
 import Text.Read
+import Test.QuickCheck
 
 getField :: (JSON.FromJSON a) => JSON.Object -> Text -> JSON.Parser a
 getField = (JSON..:)
 
 data Personaje = Personaje { nombre :: String, inventario :: [Item], rol :: Rol } deriving Show
 
-data Rol = Warrior | Mage | Priest | DeathKnight deriving (Show, Eq, Read)
+data Rol = Warrior | Mage | Priest | DeathKnight deriving (Enum, Bounded, Show, Eq, Read)
 
-data Item = Espada | Escudo | GrogXD deriving (Show, Eq, Read)
+data Item = Espada | Escudo | GrogXD deriving (Enum, Bounded, Show, Eq, Read)
 
 data Validado a = Exito a | Error String deriving Show
 
@@ -91,3 +92,16 @@ instance JSON.FromJSON Rol where
 
 parseReadableFromText :: (Read a) => JSON.Value -> JSON.Parser a
 parseReadableFromText = JSON.withText "Rol" $ maybe (fail "Nope") pure . readMaybe . unpack
+
+instance Arbitrary Rol where
+    arbitrary = arbitraryBoundedEnum
+
+instance Arbitrary Item where
+    arbitrary = arbitraryBoundedEnum
+
+instance Arbitrary Personaje where
+    arbitrary = construirPersonaje
+                    (elements ["Arthas", "Illidan", "Thrall"])
+                    arbitrary
+                    arbitrary
+                    pure
