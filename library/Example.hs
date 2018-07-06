@@ -32,9 +32,8 @@ fuerza unPersonaje = length (inventario unPersonaje) * indicePorRol (rol unPerso
 
 construirPersonajeValidado :: Validado String -> Validado [Item] -> Validado Rol -> (Personaje -> Validado Personaje) -> Validado Personaje
 construirPersonajeValidado nombreValidado inventarioValidado rolValidado validacionSobrePersonaje = 
-    case Personaje <$> nombreValidado <*> inventarioValidado <*> rolValidado of
-        Exito unPersonaje -> validacionSobrePersonaje unPersonaje
-        Error mensajeDeError -> Error mensajeDeError
+    aplicarFuncionValidadoraSoloSiValidado validacionSobrePersonaje 
+        (Personaje <$> nombreValidado <*> inventarioValidado <*> rolValidado)
 
 aplicarFuncionValidadoraSoloSiValidado :: (a -> Validado b) -> Validado a -> Validado b 
 aplicarFuncionValidadoraSoloSiValidado funcionValidadora valorValidado = case valorValidado of
