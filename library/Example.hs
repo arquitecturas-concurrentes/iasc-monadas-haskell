@@ -30,15 +30,17 @@ fuerza unPersonaje = length (inventario unPersonaje) * indicePorRol (rol unPerso
             Priest -> 10
             DeathKnight -> 50
 
-construirPersonajeValidado :: Validado String -> Validado [Item] -> Validado Rol -> (Validado Personaje -> Validado Personaje) -> Validado Personaje
+construirPersonajeValidado :: Validado String -> Validado [Item] -> Validado Rol -> (Personaje -> Validado Personaje) -> Validado Personaje
 construirPersonajeValidado nombreValidado inventarioValidado rolValidado validacionSobrePersonaje = 
-    Personaje <$> nombreValidado <*> inventarioValidado <*> rolValidado
+    case Personaje <$> nombreValidado <*> inventarioValidado <*> rolValidado of
+        Exito unPersonaje -> validacionSobrePersonaje unPersonaje
+        Error mensajeDeError -> Error mensajeDeError
 
 inicialesDePersonaje :: Personaje -> [String]
 inicialesDePersonaje unPersonaje = map (take 1) (words (nombre unPersonaje))
 
 lichKing :: Validado Personaje
-lichKing = construirPersonajeValidado (validarNombre "Arthas Menethil") (validarInventario [Espada, Escudo]) (pure DeathKnight)
+lichKing = construirPersonajeValidado (validarNombre "Arthas Menethil") (validarInventario [Espada, Escudo]) (pure DeathKnight) validarPersonaje
 
 inicialesDePersonajeValidado :: Validado Personaje -> Validado [String]
 inicialesDePersonajeValidado unPersonaje = inicialesDePersonaje <$> unPersonaje
