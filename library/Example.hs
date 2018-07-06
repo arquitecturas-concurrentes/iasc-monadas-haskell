@@ -18,13 +18,7 @@ validarNombre unNombre | length unNombre > 20 = Error "Nombre muy largo"
 
 construirPersonajeValidado :: Validado String -> Validado [Item] -> Validado Personaje
 construirPersonajeValidado nombreValidado inventarioValidado = 
-    aplicarFuncionSoloSiValidado (Personaje <$> nombreValidado) inventarioValidado
-
-aplicarFuncionSoloSiValidado :: Validado (a->b) -> Validado a -> Validado b
-aplicarFuncionSoloSiValidado funcionValidada valorValidado = case (funcionValidada, valorValidado) of
-    (Exito funcion, Exito valor) -> Exito (funcion valor)
-    (Error mensajeDeError, _) -> Error mensajeDeError
-    (_, Error mensajeDeError) -> Error mensajeDeError
+    Personaje <$> nombreValidado <*> inventarioValidado
 
 inicialesDePersonaje :: Personaje -> [String]
 inicialesDePersonaje unPersonaje = map (take 1) (words (nombre unPersonaje))
