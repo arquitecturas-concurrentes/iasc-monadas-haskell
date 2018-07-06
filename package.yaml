@@ -25,6 +25,7 @@ library:
   - base
   - aeson
   - megaparsec
+  - text
   source-dirs: library
 
 executables:

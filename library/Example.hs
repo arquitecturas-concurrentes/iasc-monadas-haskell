@@ -1,4 +1,10 @@
 module Example where
+import qualified Data.Aeson as JSON
+import qualified Data.Aeson.Types as JSON
+import Data.Text (Text)
+
+getField :: (JSON.FromJSON a) => JSON.Object -> Text -> JSON.Parser a
+getField = (JSON..:)
 
 data Personaje = Personaje { nombre :: String, inventario :: [Item], rol :: Rol } deriving Show
 
@@ -66,3 +72,5 @@ construirPersonaje nombre inventario rol transformacion = do
     unInventario <- inventario
     unRol <- rol
     transformacion (Personaje unNombre unInventario unRol)
+
+
