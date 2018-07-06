@@ -1,2 +1,12 @@
 module Example where
 
+data Personaje = Personaje { nombre :: String } deriving Show
+
+data Validado a = Exito a | Error String deriving Show
+
+validarNombre :: String -> Validado String
+validarNombre unNombre | length unNombre > 20 = Error "Nombre muy largo"
+                       | otherwise = Exito unNombre
+
+construirPersonajeValidado :: Validado String -> Validado Personaje
+construirPersonajeValidado nombreValidado = undefined
