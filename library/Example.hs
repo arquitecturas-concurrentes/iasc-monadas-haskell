@@ -18,8 +18,20 @@ validarNombre :: String -> Validado String
 validarNombre unNombre | length unNombre > 20 = Error "Nombre muy largo"
                        | otherwise = Exito unNombre
 
-construirPersonajeValidado :: Validado String -> Validado [Item] -> Validado Rol -> Validado Personaje
-construirPersonajeValidado nombreValidado inventarioValidado rolValidado = 
+validarPersonaje :: Personaje -> Validado Personaje
+validarPersonaje unPersonaje | fuerza unPersonaje <= 100 = Exito unPersonaje
+                             | otherwise = Error "El personaje esta roto"
+
+fuerza :: Personaje -> Int
+fuerza unPersonaje = length (inventario unPersonaje) * indicePorRol (rol unPersonaje)
+    where indicePorRol unRol = case unRol of 
+            Warrior -> 30
+            Mage -> 30
+            Priest -> 10
+            DeathKnight -> 50
+
+construirPersonajeValidado :: Validado String -> Validado [Item] -> Validado Rol -> (Validado Personaje -> Validado Personaje) -> Validado Personaje
+construirPersonajeValidado nombreValidado inventarioValidado rolValidado validacionSobrePersonaje = 
     Personaje <$> nombreValidado <*> inventarioValidado <*> rolValidado
 
 inicialesDePersonaje :: Personaje -> [String]
