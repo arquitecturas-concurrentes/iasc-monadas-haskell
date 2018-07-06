@@ -40,3 +40,4 @@ instance Applicative Validado where
     Exito funcion <*> Exito valor = Exito (funcion valor)
     Error mensajeDeError <*> _ = Error mensajeDeError
     _ <*> Error mensajeDeError = Error mensajeDeError
+    pure valor = Exito valor
