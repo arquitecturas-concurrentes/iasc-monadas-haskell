@@ -25,7 +25,7 @@ inicialesDePersonaje :: Personaje -> [String]
 inicialesDePersonaje unPersonaje = map (take 1) (words (nombre unPersonaje))
 
 lichKing :: Validado Personaje
-lichKing = construirPersonajeValidado (validarNombre "Arthas Menethil")
+lichKing = construirPersonajeValidado (validarNombre "Arthas Menethil") (validarInventario [Espada, Escudo])
 
 inicialesDePersonajeValidado :: Validado Personaje -> Validado [String]
 inicialesDePersonajeValidado unPersonaje = inicialesDePersonaje <$> unPersonaje
