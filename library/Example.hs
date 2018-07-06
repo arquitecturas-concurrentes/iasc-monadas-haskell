@@ -6,6 +6,12 @@ data Item = Espada | Escudo | GrogXD deriving (Show, Eq)
 
 data Validado a = Exito a | Error String deriving Show
 
+count condicion = length . filter condicion
+
+validarInventario :: [Item] -> Validado [Item]
+validarInventario unInventario | count (== GrogXD) unInventario > 1 = Error "Nadie puede llevar mas de un GrogXD"
+                             | otherwise = Exito unInventario
+
 validarNombre :: String -> Validado String
 validarNombre unNombre | length unNombre > 20 = Error "Nombre muy largo"
                        | otherwise = Exito unNombre
