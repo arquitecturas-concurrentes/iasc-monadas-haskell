@@ -54,7 +54,7 @@ construirPersonajeValidado :: Validado String -> Validado Oro -> Validado [Item]
 --    (_, Error mensajeDeError, _) -> Error mensajeDeError
 --    (_, _, Error mensajeDeError) -> Error mensajeDeError
 construirPersonajeValidado nombreValidado plataValidada inventarioValidado 
-  = aplicarFuncionSoloSiValidado (aplicarFuncionSoloSiValidado ((Personaje 100) <$> plataValidada) inventarioValidado) nombreValidado 
+  = ((Personaje 100) <$> plataValidada) <*> inventarioValidado <*> nombreValidado 
 
 
 -- #### Fxs sobre Validado Personaje
@@ -79,8 +79,7 @@ instance Functor Validado where
         Exito valorValidado -> Exito (funcion valorValidado)
         Error mensajeDeError -> Error mensajeDeError 
 
-aplicarFuncionSoloSiValidado :: Validado (a->b) -> Validado a -> Validado b
-aplicarFuncionSoloSiValidado funcionValidada valorValidado = case (funcionValidada, valorValidado) of
-    (Exito funcion, Exito valor) -> Exito (funcion valor)
-    (Error mensajeDeError, _) -> Error mensajeDeError
-    (_, Error mensajeDeError) -> Error mensajeDeError
+instance Applicative Validado where
+    Exito funcion <*> Exito valor = Exito (funcion valor)
+    Error mensajeDeError <*> _ = Error mensajeDeError
+    _ <*> Error mensajeDeError = Error mensajeDeError
