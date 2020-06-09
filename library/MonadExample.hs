@@ -43,12 +43,12 @@ validarNombre unNombre | length unNombre < 4 = Error "El nombre es muy corto"
 
 
 -- La idea seria de poder crear un personaje validado...                      
-construirPersonajeValidado :: Validado String -> Oro -> Validado Personaje
+construirPersonajeValidado :: Validado String -> Oro -> Validado [Item] -> Validado Personaje
 --construirPersonajeValidado nombreValidado plata = case nombreValidado of
 --    Exito unNombre -> Exito (Personaje plata 100 unNombre)
 --    Error mensajeDeError -> Error mensajeDeError
 --construirPersonajeValidado nombreValidado plata = fmap (Personaje plata 100) nombreValidado
-construirPersonajeValidado nombreValidado plata = (Personaje plata 100 []) <$> nombreValidado
+construirPersonajeValidado nombreValidado plata itemsValidado = (Personaje plata 100 []) <$> nombreValidado
 
 
 -- #### Fxs sobre Validado Personaje
