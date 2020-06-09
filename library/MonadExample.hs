@@ -1,7 +1,7 @@
 -- la linea de abajo es para usar el typeclass Num
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
-module MonadExample(construirPersonajeValidado, validarNombre, Personaje(..), Validado(..)) where
+module MonadExample where
 
 -- Agregamos un validado para validar el exito o el error de una validacion
 data Validado a = Exito a | Error String deriving (Show, Eq)
@@ -16,6 +16,13 @@ data Personaje = Personaje {
   nombre :: String
 } deriving (Show, Eq)
 
+-- ### Funciones adicionales sobre Personaje
+inicialesDePersonaje :: Personaje -> [String]
+inicialesDePersonaje unPersonaje = map (take 1) (words (nombre unPersonaje))
+
+obtenerDineroPersonaje :: Personaje -> Oro
+obtenerDineroPersonaje unPersonaje = (dinero unPersonaje)
+
 -- Ahora tenemos una funcion que nos va a validar que el nombre no sea demasiado corto 
 validarNombre :: String -> Validado String
 validarNombre unNombre | length unNombre < 4 = Error "El nombre es muy corto"
@@ -27,4 +34,19 @@ validarNombre unNombre | length unNombre < 4 = Error "El nombre es muy corto"
 construirPersonajeValidado :: Validado String -> Oro -> Validado Personaje
 construirPersonajeValidado nombreValidado plata = case nombreValidado of
     Exito unNombre -> Exito (Personaje plata 100 unNombre)
+    Error mensajeDeError -> Error mensajeDeError
+
+
+-- #### Fxs sobre Validado Personaje
+
+
+inicialesDePersonajeValidado :: Validado Personaje -> Validado [String]
+inicialesDePersonajeValidado unPersonaje = case unPersonaje of
+    Exito personajeValidado -> Exito (inicialesDePersonaje personajeValidado)
+    Error mensajeDeError -> Error mensajeDeError
+
+-- Ahora queremos obtener el dinero de un personaje validado
+dineroPersonajeValidado :: Validado Personaje -> Validado Oro
+dineroPersonajeValidado unPersonaje = case unPersonaje of
+    Exito personajeValidado -> Exito (obtenerDineroPersonaje personajeValidado)
     Error mensajeDeError -> Error mensajeDeError
