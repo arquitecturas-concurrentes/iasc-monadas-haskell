@@ -17,7 +17,7 @@ spec = parallel $ do
     describe "Personaje data type" $ do
         it "Deberia poder crear un Personaje" $ do
             let nombrePersonaje = "Arthas Menethil"
-            let personaje = Personaje 0 100 nombrePersonaje 
+            let personaje = Personaje 0 100 [] nombrePersonaje
             nombre personaje `shouldBe` nombrePersonaje
 
     describe "validarNombre" $ do
@@ -44,17 +44,17 @@ spec = parallel $ do
 
         it "Deberia crearme el personaje cuando el nombre tiene la longitud correcta" $ do
             let nombrePersonaje = validarNombre "NicoKnight"
-            (construirPersonajeValidado nombrePersonaje 250) == Exito (Personaje 250 100 "NicoKnight")
+            (construirPersonajeValidado nombrePersonaje 250) == Exito (Personaje 250 100 [] "NicoKnight")
 
     describe "F(x)s adicionales" $ do
         it "deberia devolverme el dinero seteado al personaje" $ do
             let nombrePersonaje = "Arthas Menethil"
-            let personaje = Personaje 0 100 nombrePersonaje
+            let personaje = Personaje 0 100 [] nombrePersonaje
             obtenerDineroPersonaje personaje `shouldBe` 0
 
         it "deberia devolverme las iniciales correctas del personaje" $ do
             let nombrePersonaje = "Arthas Menethil"
-            let personaje = Personaje 0 100 nombrePersonaje
+            let personaje = Personaje 0 100 [] nombrePersonaje
             (inicialesDePersonaje personaje) `shouldBe` ["A","M"]
 
     describe "inicialesDePersonajeValidado" $ do
@@ -74,3 +74,12 @@ spec = parallel $ do
         it "Deberia fallar al ser el nombre del personaje muy corto" $ do
             let personajeValidado = construirPersonajeValidado (validarNombre "inv") 1000
             dineroPersonajeValidado personajeValidado == Error "El nombre es muy corto"
+
+    describe "validarInventario" $ do
+        it "cuando hay mas de un scroll rojo en la lista de items" $ do
+            let items = [ScrollRojo, Espada, ScrollRojo]
+            validarInventario items == Error "Nadie puede llevar mas de un scroll rojo"
+
+        it "cuando se puede validar sin problemas la lista de items" $ do
+            let items = [ScrollRojo, Espada, Escudo]
+            validarInventario items == Exito items

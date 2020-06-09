@@ -11,10 +11,21 @@ data Validado a = Exito a | Error String deriving (Show, Eq)
 newtype Oro = Oro Int
   deriving (Show, Eq, Num)
 
+-- Ahora existen los items
+data Item = Espada | Escudo | ScrollRojo deriving (Show, Eq)
+
+-- ### Validaciones sobre items
+count condicion = length . filter condicion
+
+validarInventario :: [Item] -> Validado [Item]
+validarInventario unInventario | count (== ScrollRojo) unInventario > 1 = Error "Nadie puede llevar mas de un scroll rojo"
+                             | otherwise = Exito unInventario
+
 -- Despues esta el personake, que debe tener un nombre para empezar
 data Personaje = Personaje {
   dinero :: Oro,
   salud :: Int,
+  inventario :: [Item],
   nombre :: String
 } deriving (Show, Eq)
 
@@ -38,7 +49,7 @@ construirPersonajeValidado :: Validado String -> Oro -> Validado Personaje
 --    Exito unNombre -> Exito (Personaje plata 100 unNombre)
 --    Error mensajeDeError -> Error mensajeDeError
 --construirPersonajeValidado nombreValidado plata = fmap (Personaje plata 100) nombreValidado
-construirPersonajeValidado nombreValidado plata = (Personaje plata 100) <$> nombreValidado
+construirPersonajeValidado nombreValidado plata = (Personaje plata 100 []) <$> nombreValidado
 
 
 -- #### Fxs sobre Validado Personaje
