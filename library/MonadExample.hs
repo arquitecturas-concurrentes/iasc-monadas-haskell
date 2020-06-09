@@ -8,7 +8,7 @@ data Validado a = Exito a | Error String deriving (Show, Eq)
 
 -- Con newtype también podemos definir un nuevo tipo
 newtype Oro = Oro Int
-  deriving (Show, Eq, Num)
+  deriving (Show, Eq, Num, Ord)
 
 -- Ahora existen los items
 data Item = Espada | Escudo | ScrollRojo deriving (Show, Eq)
@@ -22,8 +22,8 @@ validarInventario unInventario | count (== ScrollRojo) unInventario > 1 = Error 
                              | otherwise = Exito unInventario
 
 data Personaje = Personaje {
-  dinero :: Oro,
   salud :: Int,
+  dinero :: Oro,
   inventario :: [Item],
   nombre :: String
 } deriving (Show, Eq)
@@ -35,6 +35,10 @@ inicialesDePersonaje unPersonaje = map (take 1) (words (nombre unPersonaje))
 obtenerDineroPersonaje :: Personaje -> Oro
 obtenerDineroPersonaje unPersonaje = (dinero unPersonaje)
 
+validarDinero :: Oro -> Validado Oro
+validarDinero dinero | dinero >= 0 = Exito dinero
+                     | otherwise = Error "Tiene que tener algo de oro o 0"
+
 -- Ahora tenemos una funcion que nos va a validar que el nombre no sea demasiado corto 
 validarNombre :: String -> Validado String
 validarNombre unNombre | length unNombre < 4 = Error "El nombre es muy corto"
@@ -43,14 +47,15 @@ validarNombre unNombre | length unNombre < 4 = Error "El nombre es muy corto"
 
 
 -- La idea seria de poder crear un personaje validado...                      
-construirPersonajeValidado :: Validado String -> Oro -> Validado [Item] -> Validado Personaje
---construirPersonajeValidado nombreValidado plata = case nombreValidado of
---    Exito unNombre -> Exito (Personaje plata 100 unNombre)
+construirPersonajeValidado :: Validado String -> Validado Oro -> Validado [Item] -> Validado Personaje
+--construirPersonajeValidado nombreValidado plata itemsValidado = case (Personaje plata 100) <$> itemsValidado of
+--    Exito constructorDePersonaje -> constructorDePersonaje <$> nombreValidado
 --    Error mensajeDeError -> Error mensajeDeError
---construirPersonajeValidado nombreValidado plata = fmap (Personaje plata 100) nombreValidado
-construirPersonajeValidado nombreValidado plata itemsValidado = case (Personaje plata 100) <$> itemsValidado of
-    Exito constructorDePersonaje -> constructorDePersonaje <$> nombreValidado
-    Error mensajeDeError -> Error mensajeDeError
+construirPersonajeValidado nombreValidado plataValidada inventarioValidado = case ((Personaje 100) <$> plataValidada, inventarioValidado, nombreValidado) of
+    (Exito constructorDePersonaje, Exito items, Exito unNombre) -> Exito (constructorDePersonaje items unNombre)
+    (Error mensajeDeError, _ , _) -> Error mensajeDeError
+    (_, Error mensajeDeError, _) -> Error mensajeDeError
+    (_, _, Error mensajeDeError) -> Error mensajeDeError
 
 -- #### Fxs sobre Validado Personaje
 
