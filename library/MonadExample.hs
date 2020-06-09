@@ -13,6 +13,9 @@ newtype Oro = Oro Int
 -- Ahora existen los items
 data Item = Espada | Escudo | ScrollRojo deriving (Show, Eq)
 
+-- Ahora estan los roles
+data Rol = Warrior | Knight | Mage | Priest | DeathKnight deriving (Show, Eq)
+
 -- ### Validaciones sobre items
 count :: (a -> Bool) -> [a] -> Int
 count condicion = length . filter condicion
@@ -25,7 +28,8 @@ data Personaje = Personaje {
   salud :: Int,
   dinero :: Oro,
   inventario :: [Item],
-  nombre :: String
+  nombre :: String,
+  rol :: Rol
 } deriving (Show, Eq)
 
 -- ### Funciones adicionales sobre Personaje
@@ -47,15 +51,14 @@ validarNombre unNombre | length unNombre < 4 = Error "El nombre es muy corto"
 
 
 -- La idea seria de poder crear un personaje validado...                      
-construirPersonajeValidado :: Validado String -> Validado Oro -> Validado [Item] -> Validado Personaje
+construirPersonajeValidado :: Validado String -> Validado Oro -> Validado [Item] -> Validado Rol -> Validado Personaje
 -- construirPersonajeValidado nombreValidado plataValidada inventarioValidado = case ((Personaje 100) <$> plataValidada, inventarioValidado, nombreValidado) of
 --    (Exito constructorDePersonaje, Exito items, Exito unNombre) -> Exito (constructorDePersonaje items unNombre)
 --    (Error mensajeDeError, _ , _) -> Error mensajeDeError
 --    (_, Error mensajeDeError, _) -> Error mensajeDeError
 --    (_, _, Error mensajeDeError) -> Error mensajeDeError
-construirPersonajeValidado nombreValidado plataValidada inventarioValidado 
-  = ((Personaje 100) <$> plataValidada) <*> inventarioValidado <*> nombreValidado 
-
+construirPersonajeValidado nombreValidado plataValidada inventarioValidado rolValidado
+  = (Personaje 100) <$> plataValidada <*> inventarioValidado <*> nombreValidado <*> rolValidado
 
 -- #### Fxs sobre Validado Personaje
 
@@ -83,3 +86,4 @@ instance Applicative Validado where
     Exito funcion <*> Exito valor = Exito (funcion valor)
     Error mensajeDeError <*> _ = Error mensajeDeError
     _ <*> Error mensajeDeError = Error mensajeDeError
+    pure valor = Exito valor
