@@ -100,3 +100,29 @@ spec = parallel $ do
 
         it "deberia ser un exito al ser un numero positivo" $ do
             validarDinero (100) `shouldBe` Exito (100)
+
+    describe "fuerza" $ do
+        it "Deberia dar 0" $ do
+            let personaje = Personaje 100 0 [] "caballero3842" DeathKnight
+            fuerza personaje `shouldBe` 0
+
+        it "Deberia dar 50 para el DeathKnight con un item" $ do
+            let personaje = Personaje 100 0 [ScrollRojo] "caballero3842" DeathKnight
+            fuerza personaje `shouldBe` 50
+
+        it "Deberia dar 150 para el DeathKnight con tres items" $ do
+            let personaje = Personaje 100 10 [ScrollRojo, Escudo, Espada] "caballero3842" DeathKnight
+            fuerza personaje `shouldBe` 150
+
+        it "Deberia dar 30 para el Mage con un item" $ do
+            let personaje = Personaje 100 0 [ScrollRojo] "mage132" Mage
+            fuerza personaje `shouldBe` 30
+    
+    describe "validarPersonaje" $ do
+        it "deberia fallar al ser la fuerza mayor a 100" $ do
+            let personaje = Personaje 100 10 [ScrollRojo, Escudo, Espada] "caballero3842" DeathKnight
+            validarPersonaje personaje `shouldBe` Error "El personaje esta roto"
+
+        it "deberia validarse al ser la fuerza menor a 100" $ do
+            let personaje = Personaje 100 0 [ScrollRojo] "mage132" Mage
+            validarPersonaje personaje `shouldBe` Exito personaje
