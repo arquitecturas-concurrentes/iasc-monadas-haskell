@@ -36,49 +36,53 @@ spec = parallel $ do
     describe "construirPersonajeValidado" $ do
         it "Deberia fallar cuando el nombre es muy corto..." $ do
             let nombrePersonaje = validarNombre "inv"
-            (construirPersonajeValidado nombrePersonaje 100 (Exito [])) == Error "El nombre es muy corto"
+            let plata = validarDinero 100
+            (construirPersonajeValidado nombrePersonaje plata (Exito [])) == Error "El nombre es muy corto"
 
         it "Deberia fallar cuando el nombre es demasiado largo..." $ do
             let nombrePersonaje = validarNombre "esteNoEsUnNOmbreValidoAlSerDemasiadoLargo"
-            (construirPersonajeValidado nombrePersonaje 100 (Exito [])) == Error "El nombre es muy largo"      
+            let plata = validarDinero 100
+            (construirPersonajeValidado nombrePersonaje plata (Exito [])) == Error "El nombre es muy largo"      
 
         it "Deberia fallar cuando el inventario es invalido" $ do
             let nombrePersonaje = validarNombre "JuanWizard"
+            let plata = validarDinero 250
             let items = validarInventario [ScrollRojo, Espada, ScrollRojo]
-            (construirPersonajeValidado nombrePersonaje 250 items) == Error "Nadie puede llevar mas de un scroll rojo"
+            (construirPersonajeValidado nombrePersonaje plata items) == Error "Nadie puede llevar mas de un scroll rojo"
 
         it "Deberia crearme el personaje cuando el nombre tiene la longitud correcta" $ do
             let nombrePersonaje = validarNombre "NicoKnight"
             let items = validarInventario [Escudo]
-            (construirPersonajeValidado nombrePersonaje 250 items) == Exito (Personaje 250 100 [Escudo] "NicoKnight")
+            let plata = validarDinero 250
+            (construirPersonajeValidado nombrePersonaje plata items) == Exito (Personaje 100 250 [Escudo] "NicoKnight")
 
     describe "F(x)s adicionales" $ do
-        it "deberia devolverme el dinero seteado al personaje" $ do
+        it "deberia devolverme el plata seteado al personaje" $ do
             let nombrePersonaje = "Arthas Menethil"
-            let personaje = Personaje 0 100 [] nombrePersonaje
+            let personaje = Personaje 100 0 [] nombrePersonaje
             obtenerDineroPersonaje personaje `shouldBe` 0
 
         it "deberia devolverme las iniciales correctas del personaje" $ do
             let nombrePersonaje = "Arthas Menethil"
-            let personaje = Personaje 0 100 [] nombrePersonaje
+            let personaje = Personaje 100 0 [] nombrePersonaje
             (inicialesDePersonaje personaje) `shouldBe` ["A","M"]
 
     describe "inicialesDePersonajeValidado" $ do
         it "Deberia obtener las iniciales de un personaje validado" $ do
-            let personajeValidado = construirPersonajeValidado (validarNombre "Arthas Menethil") 1000 (Exito [])
+            let personajeValidado = construirPersonajeValidado (validarNombre "Arthas Menethil") (Exito 1000) (Exito [])
             inicialesDePersonajeValidado personajeValidado == Exito (["A","M"])
 
         it "Deberia fallar al ser el nombre del personaje muy corto" $ do
-            let personajeValidado = construirPersonajeValidado (validarNombre "inv") 1000 (Exito [])
+            let personajeValidado = construirPersonajeValidado (validarNombre "inv") (Exito 1000) (Exito [])
             inicialesDePersonajeValidado personajeValidado == Error "El nombre es muy corto"
 
     describe "dineroPersonajeValidado" $ do
         it "Deberia obtener el saldo de un personaje validado" $ do
-            let personajeValidado = construirPersonajeValidado (validarNombre "Arthas Menethil") 1000 (Exito [])
+            let personajeValidado = construirPersonajeValidado (validarNombre "Arthas Menethil") (Exito 1000) (Exito [])
             dineroPersonajeValidado personajeValidado == Exito (1000)
 
         it "Deberia fallar al ser el nombre del personaje muy corto" $ do
-            let personajeValidado = construirPersonajeValidado (validarNombre "inv") 1000 (Exito [])
+            let personajeValidado = construirPersonajeValidado (validarNombre "inv") (Exito 1000) (Exito [])
             dineroPersonajeValidado personajeValidado == Error "El nombre es muy corto"
 
     describe "validarInventario" $ do
@@ -89,3 +93,10 @@ spec = parallel $ do
         it "cuando se puede validar sin problemas la lista de items" $ do
             let items = [ScrollRojo, Espada, Escudo]
             validarInventario items == Exito items
+
+    describe "validarDinero" $ do
+        it "deberia fallar al ser un numero negativo" $ do
+            validarDinero (-1) `shouldBe` Error "Tiene que tener algo de oro o 0"
+
+        it "deberia ser un exito al ser un numero positivo" $ do
+            validarDinero (100) `shouldBe` Exito (100)
