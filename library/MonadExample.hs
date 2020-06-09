@@ -32,6 +32,19 @@ data Personaje = Personaje {
   rol :: Rol
 } deriving (Show, Eq)
 
+validarPersonaje :: Personaje -> Validado Personaje
+validarPersonaje unPersonaje | fuerza unPersonaje <= 100 = Exito unPersonaje
+                             | otherwise = Error "El personaje esta roto"
+
+fuerza :: Personaje -> Int
+fuerza unPersonaje = length (inventario unPersonaje) * indicePorRol (rol unPersonaje)
+    where indicePorRol unRol = case unRol of 
+            Warrior -> 30
+            Mage -> 30
+            Knight -> 35
+            Priest -> 10
+            DeathKnight -> 50
+
 -- ### Funciones adicionales sobre Personaje
 inicialesDePersonaje :: Personaje -> [String]
 inicialesDePersonaje unPersonaje = map (take 1) (words (nombre unPersonaje))
