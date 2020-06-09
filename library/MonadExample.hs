@@ -67,7 +67,7 @@ validarNombre unNombre | length unNombre < 4 = Error "El nombre es muy corto"
 -- La idea seria de poder crear un personaje validado...                      
 construirPersonajeValidado :: Validado String -> Validado Oro -> Validado [Item] -> Validado Rol -> (Personaje -> Validado Personaje) -> Validado Personaje
 construirPersonajeValidado nombreValidado plataValidada inventarioValidado rolValidado validacionSobrePersonaje
-  = aplicarFuncionValidadoraSoloSiValidado validacionSobrePersonaje ((Personaje 100) <$> plataValidada <*> inventarioValidado <*> nombreValidado <*> rolValidado)
+  = ((Personaje 100) <$> plataValidada <*> inventarioValidado <*> nombreValidado <*> rolValidado) >>= validacionSobrePersonaje
 
 -- #### Fxs sobre Validado Personaje
 
@@ -97,7 +97,6 @@ instance Applicative Validado where
     _ <*> Error mensajeDeError = Error mensajeDeError
     pure valor = Exito valor
 
-aplicarFuncionValidadoraSoloSiValidado :: (a -> Validado b) -> Validado a -> Validado b 
-aplicarFuncionValidadoraSoloSiValidado funcionValidadora valorValidado = case valorValidado of
-    Exito unValor -> funcionValidadora unValor
-    Error mensajeDeError -> Error mensajeDeError
+instance Monad Validado where
+    Exito valor >>= funcion = funcion valor
+    Error mensajeDeError >>= _ = Error mensajeDeError
