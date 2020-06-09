@@ -44,3 +44,16 @@ spec = parallel $ do
         it "Deberia ser exitosa la validacion" $ do
             let nombrePersonaje = "Arthas Menethil"
             validarNombre nombrePersonaje == Exito nombrePersonaje
+    
+    describe "construirPersonajeValidado" $ do
+        it "Deberia fallar cuando el nombre es muy corto..." $ do
+            let nombrePersonaje = validarNombre "inv"
+            (construirPersonajeValidado nombrePersonaje 100) == Error "El nombre es muy corto"
+
+        it "Deberia fallar cuando el nombre es demasiado largo..." $ do
+            let nombrePersonaje = validarNombre "esteNoEsUnNOmbreValidoAlSerDemasiadoLargo"
+            (construirPersonajeValidado nombrePersonaje 100) == Error "El nombre es muy largo"      
+
+        it "Deberia crearme el personaje cuando el nombre tiene la longitud correcta" $ do
+            let nombrePersonaje = validarNombre "NicoKnight"
+            (construirPersonajeValidado nombrePersonaje 250) == Exito (Personaje 250 100 "NicoKnight")   
