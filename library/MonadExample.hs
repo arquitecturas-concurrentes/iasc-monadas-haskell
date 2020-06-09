@@ -49,8 +49,9 @@ construirPersonajeValidado :: Validado String -> Oro -> Validado [Item] -> Valid
 --    Exito unNombre -> Exito (Personaje plata 100 unNombre)
 --    Error mensajeDeError -> Error mensajeDeError
 --construirPersonajeValidado nombreValidado plata = fmap (Personaje plata 100) nombreValidado
-construirPersonajeValidado nombreValidado plata itemsValidado = (Personaje plata 100 []) <$> nombreValidado
-
+construirPersonajeValidado nombreValidado plata itemsValidado = case (Personaje plata 100) <$> itemsValidado of
+    Exito constructorDePersonaje -> constructorDePersonaje <$> nombreValidado
+    Error mensajeDeError -> Error mensajeDeError
 
 -- #### Fxs sobre Validado Personaje
 
