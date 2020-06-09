@@ -37,7 +37,7 @@ construirPersonajeValidado :: Validado String -> Oro -> Validado Personaje
 --construirPersonajeValidado nombreValidado plata = case nombreValidado of
 --    Exito unNombre -> Exito (Personaje plata 100 unNombre)
 --    Error mensajeDeError -> Error mensajeDeError
-construirPersonajeValidado nombreValidado plata = soloSiEstaValidado (Personaje plata 100) nombreValidado
+construirPersonajeValidado nombreValidado plata = fmap (Personaje plata 100) nombreValidado
 
 -- #### Fxs sobre Validado Personaje
 
@@ -46,17 +46,17 @@ inicialesDePersonajeValidado :: Validado Personaje -> Validado [String]
 --inicialesDePersonajeValidado unPersonaje = case unPersonaje of
 --    Exito personajeValidado -> Exito (inicialesDePersonaje personajeValidado)
 --    Error mensajeDeError -> Error mensajeDeError
-inicialesDePersonajeValidado unPersonaje = soloSiEstaValidado inicialesDePersonaje unPersonaje
+inicialesDePersonajeValidado unPersonaje = fmap inicialesDePersonaje unPersonaje
 
 -- Ahora queremos obtener el dinero de un personaje validado
 dineroPersonajeValidado :: Validado Personaje -> Validado Oro
 --dineroPersonajeValidado unPersonaje = case unPersonaje of
 --    Exito personajeValidado -> Exito (obtenerDineroPersonaje personajeValidado)
 --    Error mensajeDeError -> Error mensajeDeError
-dineroPersonajeValidado unPersonaje = soloSiEstaValidado obtenerDineroPersonaje unPersonaje
+dineroPersonajeValidado unPersonaje = fmap obtenerDineroPersonaje unPersonaje
 
 -- podemos hacer esto de manera mas generica ahora...
-soloSiEstaValidado :: (a->b) -> Validado a -> Validado b
-soloSiEstaValidado funcion unValor = case unValor of
-    Exito valorValidado -> Exito (funcion valorValidado)
-    Error mensajeDeError -> Error mensajeDeError
+instance Functor Validado where
+    fmap funcion valor = case valor of
+        Exito valorValidado -> Exito (funcion valorValidado)
+        Error mensajeDeError -> Error mensajeDeError 
