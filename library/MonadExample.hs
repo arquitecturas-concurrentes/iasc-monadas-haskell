@@ -63,12 +63,6 @@ validarNombre unNombre | length unNombre < 4 = Error "El nombre es muy corto"
                        | length unNombre > 20 = Error "El nombre es muy largo"
                        | otherwise = Exito unNombre
 
-
--- La idea seria de poder crear un personaje validado...                      
-construirPersonajeValidado :: Validado String -> Validado Oro -> Validado [Item] -> Validado Rol -> (Personaje -> Validado Personaje) -> Validado Personaje
-construirPersonajeValidado nombreValidado plataValidada inventarioValidado rolValidado validacionSobrePersonaje
-  = ((Personaje 100) <$> plataValidada <*> inventarioValidado <*> nombreValidado <*> rolValidado) >>= validacionSobrePersonaje
-
 -- #### Fxs sobre Validado Personaje
 
 inicialesDePersonajeValidado :: Validado Personaje -> Validado [String]
@@ -100,3 +94,21 @@ instance Applicative Validado where
 instance Monad Validado where
     Exito valor >>= funcion = funcion valor
     Error mensajeDeError >>= _ = Error mensajeDeError
+
+-- La idea seria de poder crear un personaje validado...                      
+construirPersonajeValidado :: Validado String -> Validado Oro -> Validado [Item] -> Validado Rol -> (Personaje -> Validado Personaje) -> Validado Personaje
+construirPersonajeValidado nombreValidado plataValidada inventarioValidado rolValidado validacionSobrePersonaje
+  = ((Personaje 100) <$> plataValidada <*> inventarioValidado <*> nombreValidado <*> rolValidado) >>= validacionSobrePersonaje
+
+
+--- Lo mismo que construirPersonajeValidado pero con do notation
+construirPersonaje nombre plata inventario rol transformacion = do
+    unNombre <- nombre
+    unaPlata <- plata
+    unInventario <- inventario
+    unRol <- rol
+    transformacion (Personaje 100 unaPlata unInventario unNombre unRol)
+
+--- Tambien se puede extraer a listas...
+posiblesPersonajes nombres inventarios roles transformaciones =
+    (Personaje <$> nombres <*> inventarios <*> roles) >>= transformaciones 
