@@ -65,15 +65,8 @@ validarNombre unNombre | length unNombre < 4 = Error "El nombre es muy corto"
 
 -- La idea seria de poder crear un personaje validado...                      
 construirPersonajeValidado :: Validado String -> Validado Oro -> Validado [Item] -> Validado Rol -> (Personaje -> Validado Personaje) -> Validado Personaje
--- construirPersonajeValidado nombreValidado plataValidada inventarioValidado = case ((Personaje 100) <$> plataValidada, inventarioValidado, nombreValidado) of
---    (Exito constructorDePersonaje, Exito items, Exito unNombre) -> Exito (constructorDePersonaje items unNombre)
---    (Error mensajeDeError, _ , _) -> Error mensajeDeError
---    (_, Error mensajeDeError, _) -> Error mensajeDeError
---    (_, _, Error mensajeDeError) -> Error mensajeDeError
 construirPersonajeValidado nombreValidado plataValidada inventarioValidado rolValidado validacionSobrePersonaje
-  = case (Personaje 100) <$> plataValidada <*> inventarioValidado <*> nombreValidado <*> rolValidado of
-      Exito unPersonaje -> validacionSobrePersonaje unPersonaje
-      Error mensajeDeError -> Error mensajeDeError
+  = aplicarFuncionValidadoraSoloSiValidado validacionSobrePersonaje ((Personaje 100) <$> plataValidada <*> inventarioValidado <*> nombreValidado <*> rolValidado)
 
 -- #### Fxs sobre Validado Personaje
 
@@ -102,3 +95,8 @@ instance Applicative Validado where
     Error mensajeDeError <*> _ = Error mensajeDeError
     _ <*> Error mensajeDeError = Error mensajeDeError
     pure valor = Exito valor
+
+aplicarFuncionValidadoraSoloSiValidado :: (a -> Validado b) -> Validado a -> Validado b 
+aplicarFuncionValidadoraSoloSiValidado funcionValidadora valorValidado = case valorValidado of
+    Exito unValor -> funcionValidadora unValor
+    Error mensajeDeError -> Error mensajeDeError
