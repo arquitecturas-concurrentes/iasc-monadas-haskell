@@ -144,3 +144,21 @@ spec = parallel $ do
         it "deberia validarse al ser la fuerza menor a 100" $ do
             let personaje = Personaje 100 0 [ScrollRojo] "mage132" Mage
             validarPersonaje personaje `shouldBe` Exito personaje
+    
+    describe "construirPersonaje" $ do
+        it "Deberia fallar cuando el nombre es demasiado largo..." $ do
+            let nombrePersonaje = validarNombre "esteNoEsUnNOmbreValidoAlSerDemasiadoLargo"
+            let plata = validarDinero 100
+            (construirPersonaje nombrePersonaje plata (Exito []) (pure Knight) validarPersonaje) == Error "El nombre es muy largo"      
+
+        it "Deberia crearme el personaje cuando el nombre tiene la longitud correcta" $ do
+            let nombrePersonaje = validarNombre "NicoKnight"
+            let items = validarInventario [Escudo]
+            let plata = validarDinero 250
+            (construirPersonaje nombrePersonaje plata items (pure Knight) validarPersonaje) == Exito (Personaje 100 250 [Escudo] "NicoKnight" Knight)
+
+        it "Deberia fallar cuando el personaje esta roto" $ do
+            let nombrePersonaje = validarNombre "NicoKnight"
+            let items = validarInventario [ScrollRojo, Escudo, Espada]
+            let plata = validarDinero 250
+            (construirPersonaje nombrePersonaje plata items (pure Knight) validarPersonaje) == Error "El personaje esta roto"

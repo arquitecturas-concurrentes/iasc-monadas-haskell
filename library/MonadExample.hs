@@ -62,12 +62,6 @@ validarNombre unNombre | length unNombre < 4 = Error "El nombre es muy corto"
                        | length unNombre > 20 = Error "El nombre es muy largo"
                        | otherwise = Exito unNombre
 
-
--- La idea seria de poder crear un personaje validado...                      
-construirPersonajeValidado :: Validado String -> Validado Oro -> Validado [Item] -> Validado Rol -> (Personaje -> Validado Personaje) -> Validado Personaje
-construirPersonajeValidado nombreValidado plataValidada inventarioValidado rolValidado validacionSobrePersonaje
-  = ((Personaje 100) <$> plataValidada <*> inventarioValidado <*> nombreValidado <*> rolValidado) >>= validacionSobrePersonaje
-
 -- #### Fxs sobre Validado Personaje
 
 inicialesDePersonajeValidado :: Validado Personaje -> Validado [String]
@@ -99,3 +93,25 @@ instance Applicative Validado where
 instance Monad Validado where
     Exito valor >>= funcion = funcion valor
     Error mensajeDeError >>= _ = Error mensajeDeError
+
+-- La idea seria de poder crear un personaje validado...                      
+construirPersonajeValidado :: Validado String -> Validado Oro -> Validado [Item] -> Validado Rol -> (Personaje -> Validado Personaje) -> Validado Personaje
+construirPersonajeValidado nombreValidado plataValidada inventarioValidado rolValidado validacionSobrePersonaje
+  = ((Personaje 100) <$> plataValidada <*> inventarioValidado <*> nombreValidado <*> rolValidado) >>= validacionSobrePersonaje
+
+
+--- Lo mismo que construirPersonajeValidado pero con do notation
+construirPersonaje :: Validado String -> Validado Oro -> Validado [Item] -> Validado Rol -> (Personaje -> Validado Personaje) -> Validado Personaje
+construirPersonaje nombreValidado plataValidada inventarioValidado rolValidado validacionSobrePersonaje = do
+    unNombre <- nombreValidado
+    unaPlata <- plataValidada
+    unInventario <- inventarioValidado
+    unRol <- rolValidado
+    validacionSobrePersonaje (Personaje 100 unaPlata unInventario unNombre unRol)
+
+--- Tambien se puede extraer a listas...
+posiblesPersonajes :: [String] -> [[Item]] -> [Rol] -> [Personaje]
+posiblesPersonajes nombres inventarios roles =
+    (Personaje 100 0) <$> inventarios <*> nombres <*> roles
+
+-- posiblesPersonajes ["Ernesto", "Nico"] [[Espada, Escudo], [ScrollRojo]] [Knight, Priest]
