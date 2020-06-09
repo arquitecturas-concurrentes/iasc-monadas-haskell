@@ -48,17 +48,16 @@ validarNombre unNombre | length unNombre < 4 = Error "El nombre es muy corto"
 
 -- La idea seria de poder crear un personaje validado...                      
 construirPersonajeValidado :: Validado String -> Validado Oro -> Validado [Item] -> Validado Personaje
---construirPersonajeValidado nombreValidado plata itemsValidado = case (Personaje plata 100) <$> itemsValidado of
---    Exito constructorDePersonaje -> constructorDePersonaje <$> nombreValidado
---    Error mensajeDeError -> Error mensajeDeError
-construirPersonajeValidado nombreValidado plataValidada inventarioValidado = case ((Personaje 100) <$> plataValidada, inventarioValidado, nombreValidado) of
-    (Exito constructorDePersonaje, Exito items, Exito unNombre) -> Exito (constructorDePersonaje items unNombre)
-    (Error mensajeDeError, _ , _) -> Error mensajeDeError
-    (_, Error mensajeDeError, _) -> Error mensajeDeError
-    (_, _, Error mensajeDeError) -> Error mensajeDeError
+-- construirPersonajeValidado nombreValidado plataValidada inventarioValidado = case ((Personaje 100) <$> plataValidada, inventarioValidado, nombreValidado) of
+--    (Exito constructorDePersonaje, Exito items, Exito unNombre) -> Exito (constructorDePersonaje items unNombre)
+--    (Error mensajeDeError, _ , _) -> Error mensajeDeError
+--    (_, Error mensajeDeError, _) -> Error mensajeDeError
+--    (_, _, Error mensajeDeError) -> Error mensajeDeError
+construirPersonajeValidado nombreValidado plataValidada inventarioValidado 
+  = aplicarFuncionSoloSiValidado (aplicarFuncionSoloSiValidado ((Personaje 100) <$> plataValidada) inventarioValidado) nombreValidado 
+
 
 -- #### Fxs sobre Validado Personaje
-
 
 inicialesDePersonajeValidado :: Validado Personaje -> Validado [String]
 --inicialesDePersonajeValidado unPersonaje = case unPersonaje of
@@ -75,8 +74,13 @@ dineroPersonajeValidado :: Validado Personaje -> Validado Oro
 --dineroPersonajeValidado unPersonaje = fmap obtenerDineroPersonaje unPersonaje
 dineroPersonajeValidado unPersonaje = obtenerDineroPersonaje <$> unPersonaje
 
--- podemos hacer esto de manera mas generica ahora...
 instance Functor Validado where
     fmap funcion valor = case valor of
         Exito valorValidado -> Exito (funcion valorValidado)
         Error mensajeDeError -> Error mensajeDeError 
+
+aplicarFuncionSoloSiValidado :: Validado (a->b) -> Validado a -> Validado b
+aplicarFuncionSoloSiValidado funcionValidada valorValidado = case (funcionValidada, valorValidado) of
+    (Exito funcion, Exito valor) -> Exito (funcion valor)
+    (Error mensajeDeError, _) -> Error mensajeDeError
+    (_, Error mensajeDeError) -> Error mensajeDeError
