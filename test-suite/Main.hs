@@ -54,9 +54,15 @@ spec = parallel $ do
             let nombrePersonaje = validarNombre "esteNoEsUnNOmbreValidoAlSerDemasiadoLargo"
             (construirPersonajeValidado nombrePersonaje 100 (Exito [])) == Error "El nombre es muy largo"      
 
+        it "Deberia fallar cuando el inventario es invalido" $ do
+            let nombrePersonaje = validarNombre "JuanWizard"
+            let items = validarInventario [ScrollRojo, Espada, ScrollRojo]
+            (construirPersonajeValidado nombrePersonaje 250 items) == Error "Nadie puede llevar mas de un scroll rojo"
+
         it "Deberia crearme el personaje cuando el nombre tiene la longitud correcta" $ do
             let nombrePersonaje = validarNombre "NicoKnight"
-            (construirPersonajeValidado nombrePersonaje 250 (Exito [])) == Exito (Personaje 250 100 [] "NicoKnight")
+            let items = validarInventario [Escudo]
+            (construirPersonajeValidado nombrePersonaje 250 items) == Exito (Personaje 250 100 [Escudo] "NicoKnight")
 
     describe "F(x)s adicionales" $ do
         it "deberia devolverme el dinero seteado al personaje" $ do
