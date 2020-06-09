@@ -5,14 +5,30 @@ import qualified Test.Tasty
 -- Hspec is one of the providers for Tasty. It provides a nice syntax for
 -- writing tests. Its website has more info: <https://hspec.github.io>.
 import Test.Tasty.Hspec
-import Data.Monoid
+import MonadExample
 
 main :: IO ()
 main = do
-    test <- testSpec "charla-monadas" spec
+    test <- testSpec "iasc-monads" spec
     Test.Tasty.defaultMain test
 
 spec :: Spec
-spec = describe "tuvieja" $
-    it "is trivially true" $
-        (True `shouldBe` True) <> (True `shouldBe` False)
+spec = parallel $ do
+    describe "Personaje data type" $ do
+        it "Deberia poder crear un Personaje" $ do
+            let nombrePersonaje = "Arthas Menethil"
+            let personaje = Personaje 0 100 nombrePersonaje 
+            nombre personaje `shouldBe` nombrePersonaje
+
+    describe "validarNombre" $ do
+        it "Deberia fallar cuando el nombre es muy corto..." $ do
+            let nombrePersonaje = "inv"
+            validarNombre nombrePersonaje == Error "El nombre es muy corto"
+
+        it "Deberia fallar cuando el nombre es demasiado largo..." $ do
+            let nombrePersonaje = "esteNoEsUnNOmbreValidoAlSerDemasiadoLargo"
+            validarNombre nombrePersonaje == Error "El nombre es muy largo" 
+
+        it "Deberia ser exitosa la validacion" $ do
+            let nombrePersonaje = "Arthas Menethil"
+            validarNombre nombrePersonaje == Exito nombrePersonaje

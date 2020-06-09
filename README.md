@@ -1,4 +1,4 @@
-# [charla-monadas][]
+# [iasc-monads][]
 
 Thanks for starting a project with Haskeleton! If you haven't heard of it
 before, I suggest reading the introductory blog post. You can find it here:
@@ -45,4 +45,4 @@ stack haddock
 
 Thanks again, and happy hacking!
 
-[charla-monadas]: https://github.com/githubuser/charla-monadas
+[iasc-monads]: https://github.com/githubuser/iasc-monads

@@ -1,14 +1,14 @@
 # This YAML file describes your package. Stack will automatically generate a
 # Cabal file when you run `stack build`. See the hpack website for help with
 # this file: <https://github.com/sol/hpack>.
-name: charla-monadas
+name: iasc-monads
 version: '0.0.0'
-github: "githubuser/charla-monadas"
+github: "githubuser/iasc-monads"
 license: MIT
 author: "Author name here"
 maintainer: "Author name here"
 # synopsis: A new Haskeleton package.
-# description: charla-monadas is a new Haskeleton package.
+# description: iasc-monads is a new Haskeleton package.
 # category: Other
 
 extra-source-files:
@@ -23,33 +23,27 @@ ghc-options: -Wall
 library:
   dependencies:
   - base
-  - aeson
-  - megaparsec
-  - text
-  - QuickCheck
   source-dirs: library
 
 executables:
-  charla-monadas:
+  iasc-monads:
     source-dirs: executable
     main: Main.hs
     dependencies:
-    - aeson
-    - megaparsec
     - base
-    - charla-monadas
+    - iasc-monads
     ghc-options:
     - -rtsopts
     - -threaded
     - -with-rtsopts=-N
 
 benchmarks:
-  charla-monadas-benchmarks:
+  iasc-monads-benchmarks:
     source-dirs: benchmark
     main: Main.hs
     dependencies:
     - base
-    - charla-monadas
+    - iasc-monads
     - criterion
     ghc-options:
     - -rtsopts
@@ -57,12 +51,12 @@ benchmarks:
     - -with-rtsopts=-N
 
 tests:
-  charla-monadas-test-suite:
+  iasc-monads-test-suite:
     source-dirs: test-suite
     main: Main.hs
     dependencies:
     - base
-    - charla-monadas
+    - iasc-monads
     - tasty
     - tasty-hspec
     ghc-options:
