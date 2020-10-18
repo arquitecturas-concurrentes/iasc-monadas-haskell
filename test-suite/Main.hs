@@ -24,10 +24,10 @@ spec = parallel $ do
             let nombrePersonaje = "Arthas Menethil"
             let personaje = Personaje 0 100 nombrePersonaje
             let otroPersonaje = Personaje 0 100 nombrePersonaje 
-            (personaje == otroPersonaje) `shouldBe` True
+            personaje `shouldBe` otroPersonaje
 
         it "Dos personajes son distintos si tienen distintos atributos" $ do
             let nombrePersonaje = "Arthas Menethil"
             let personaje = Personaje 0 100 nombrePersonaje
             let otroPersonaje = Personaje 200 100 nombrePersonaje 
-            (personaje /= otroPersonaje) `shouldBe` True
+            personaje `shouldNotBe` otroPersonaje
