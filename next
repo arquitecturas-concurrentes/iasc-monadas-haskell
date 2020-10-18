@@ -1,0 +1,3 @@
+#!/bin/bash
+
+moveTo next > /dev/null
