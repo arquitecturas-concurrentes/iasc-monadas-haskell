@@ -19,7 +19,7 @@ spec = parallel $ do
             let nombrePersonaje = "Arthas Menethil"
             let personaje = Personaje 0 100 nombrePersonaje 
             nombre personaje `shouldBe` nombrePersonaje
-        
+
         it "Dos personajes son iguales si tienen mismo nombre, dinero y salud" $ do
             let nombrePersonaje = "Arthas Menethil"
             let personaje = Personaje 0 100 nombrePersonaje
@@ -31,3 +31,16 @@ spec = parallel $ do
             let personaje = Personaje 0 100 nombrePersonaje
             let otroPersonaje = Personaje 200 100 nombrePersonaje 
             personaje `shouldNotBe` otroPersonaje
+
+    describe "validarNombre" $ do
+        it "Deberia fallar cuando el nombre es muy corto..." $ do
+            let nombrePersonaje = "inv"
+            validarNombre nombrePersonaje == Error "El nombre es muy corto"
+
+        it "Deberia fallar cuando el nombre es demasiado largo..." $ do
+            let nombrePersonaje = "esteNoEsUnNOmbreValidoAlSerDemasiadoLargo"
+            validarNombre nombrePersonaje == Error "El nombre es muy largo" 
+
+        it "Deberia ser exitosa la validacion" $ do
+            let nombrePersonaje = "Arthas Menethil"
+            validarNombre nombrePersonaje == Exito nombrePersonaje
