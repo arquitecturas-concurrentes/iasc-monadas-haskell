@@ -8,3 +8,9 @@ data Personaje = Personaje {
   salud :: Int,
   nombre :: String
 }
+
+instance Eq Personaje where
+  (==) unPersonaje otroPersonaje =
+    dinero unPersonaje == dinero otroPersonaje &&
+    salud unPersonaje == salud otroPersonaje &&
+    nombre unPersonaje == nombre otroPersonaje
